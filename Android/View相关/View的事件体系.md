@@ -32,3 +32,24 @@
 1. onTouchListener设置后不会再触发onTouchEvent
 2. onTouchEvent处理了点击事件如果onTouchListener不处理点击事件，那么就不会有点击事件了。
 <img src="https://upload-images.jianshu.io/upload_images/5811423-685b570505487ce2.png?imageMogr2/auto-orient/strip|imageView2/2/w/823/format/webp">
+
+
+### 有A、B两个Button，各自设置了OnClickListener，在A上按下，移动到B上抬起，会触发OnClickListener么？为何?UP事件谁接收到了？OnClickListener触发的条件是哪些？
+
+Android 的点击事件识别依赖于 DOWN 和 UP 事件都发生在同一个视图上。这是为了避免误触和提供一致的用户体验。如果仅仅因为用户的手指在移动过程中经过了另一个视图就触发点击事件，那么用户界面的行为将变得难以预测和控制。
+
+OnClickListener触发的条件是哪些？
+- DOWN 事件发生在目标视图上。
+- 紧接着的 UP 事件也发生在同一目标视图上。
+- DOWN 和 UP 事件之间的时间差没有超过系统定义的点击时间阈值（这个值可以通过 ViewConfiguration.getTapTimeout() 获取，但通常不需要开发者直接关心）。
+- 没有其他触摸事件（如滑动、长按等）在这个时间窗口内中断 DOWN-UP 序列。
+
+### MotionEvent.ACTION_CANCEL怎么触发
+- 父视图拦截事件：
+    当父视图（ViewGroup）通过onInterceptTouchEvent()方法返回true时，表示父视图要拦截触摸事件。此时，系统会向被拦截的子视图发送一个ACTION_CANCEL事件，以通知子视图其触摸事件已被取消，子视图将不会再收到后续的事件（如ACTION_MOVE或ACTION_UP）。这是ACTION_CANCEL最常见的一种触发场景。
+- 系统需要取消当前手势：
+    在某些情况下，系统可能出于内部管理的需要，决定取消当前的触摸手势。这时，也会向相关的视图发送ACTION_CANCEL事件。虽然这种情况不如父视图拦截事件常见，但在设计复杂的用户界面和交互逻辑时，仍然需要考虑这种情况。
+- 触摸超出正常UI边界：
+    在一些特殊情况下，如用户的触摸操作超出了应用界面的正常边界，系统也可能会触发ACTION_CANCEL事件。这有助于应用及时响应触摸操作的变化，避免不必要的资源消耗和界面混乱。
+- 其他系统级因素：
+    除了上述几种情况外，还可能存在其他系统级因素导致ACTION_CANCEL事件的触发。这些因素可能涉及到系统的底层实现和性能优化等方面，对于应用开发者来说，通常不需要深入了解这些内部机制。
