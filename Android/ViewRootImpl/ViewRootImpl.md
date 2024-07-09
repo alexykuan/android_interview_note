@@ -5,6 +5,9 @@ ViewRootImpl是在ActivityThread的handleResumeActivity方法中创建的。具�
 2. WindowManagerGlobal.addView
 3. ViewRootImpl.setView
 
+### Activity中能在子线程操作ui吗？
+在onResume()前可以更新ui。因为在onResume()之前，ViewRootImpl还没有被创建，所以可以在子线程中更新UI。但是，在onResume()之后，ViewRootImpl已经被创建，此时如果在子线程中更新UI，就会抛出CalledFromWrongThreadException异常。
+
 ### ViewRootImpl的作用
 
 视图树的测量、布局和绘制：
