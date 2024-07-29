@@ -28,5 +28,6 @@ Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() 
 
     Choreographer通过VSync信号来驱动UI的绘制。在Android中，VSync信号是由硬件提供的，每秒60次。Choreographer会在收到VSync信号后，调用`doFrame()`方法来执行UI的绘制。
 
-
+### ViewRootImpl和Choreographer的协作
     
+    ViewRootImpl作为PhoneWindow和WindowManager沟通的桥梁。在windows显示出来的时候会调用ViewRoootImpl的setView方法，而setView方法中会创建一个Choreographer对象，并且注册一个FrameCallback，这个FrameCallback会在下一帧执行callback的runnable方法，而runnable方法会调用doTraversals()方法，而doTraversals()方法会调用performTraversals()方法，而performTraversals()方法会调用performDraw()方法，而performDraw()方法会调用View的draw方法，从而完成UI的绘制。

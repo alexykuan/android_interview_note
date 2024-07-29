@@ -90,3 +90,14 @@
 
 ### Activity数据为什么不设置为setData
 
+
+### Activity是什么时候显示出来的。
+
+- ActivityThread.handleResumeActivity()
+- ActivityThread.performResumeActivity()
+- Activity.performResume()
+- Instrumentation.callActivityOnResume()
+- Activity.onResume()
+- ViewRootImpl.setView()
+- ViewRootImpl.requestLayout()
+- Activity.makeVisible()
