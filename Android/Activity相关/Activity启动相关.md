@@ -90,6 +90,9 @@
 
 ### Activity数据为什么不设置为setData
 
+1. 数据可能会涉及跨进程传输，setData就只能传输基本数据类型或者string
+2. 会导致数据不可靠。如果在传输过程中，数据被篡改，setData无法检测到，setData只能传输基本数据类型或者string，不能传输自定义对象，所以setData无法传输自定义对象
+
 
 ### Activity是什么时候显示出来的。
 
