@@ -51,3 +51,10 @@ GC是Garbege Collection的缩写，垃圾收集，是Java虚拟机（JVM）中�
 * G1收集器
 * ZGC收集器
 * Shenandoah收集器
+
+
+### JVM分代回收机制
+
+JVM将堆内存分为新生代和老年代，新生代用于存储新创建的对象，老年代用于存储存活时间较长的对象。
+
+新生代又分为Eden区和两个Survivor区，Eden区和Survivor区的大小比例一般为<b>8:1:1</b>。当Eden区满时，会触发Minor GC，将存活的对象复制到Survivor区，然后清空Eden区。当Survivor区满时，会将存活的对象复制到另一个Survivor区，然后清空Survivor区。当对象在Survivor区存活了足够长的时间后，会被复制到老年代。
