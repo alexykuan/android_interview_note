@@ -1,3 +1,5 @@
+# [参考](https://juejin.cn/post/6937195290092896287#heading-5)
+
 ### Activity的启动模式和作用简述
 #### 1. `standard`
 
