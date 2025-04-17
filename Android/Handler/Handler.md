@@ -1,30 +1,30 @@
-### Handler的作用
+### Handler 的作用
 
-Handler是Android中用于处理异步消息的类，它允许我们在不同的线程之间传递消息和Runnable对象，从而实现线程间的通信。
-Handler通常与Looper和MessageQueue一起使用，其中Looper负责管理MessageQueue，而Handler则负责向MessageQueue发送消息和Runnable对象。
+Handler 是 Android 中用于处理异步消息的类，它允许我们在不同的线程之间传递消息和 Runnable 对象，从而实现线程间的通信。
+Handler 通常与 Looper 和 MessageQueue 一起使用，其中 Looper 负责管理 MessageQueue，而 Handler 则负责向 MessageQueue 发送消息和 Runnable 对象。
 
-### Handler的使用场景
+### Handler 的使用场景
 
-Handler通常用于以下场景：
+Handler 通常用于以下场景：
 
-1. 在子线程中更新UI：在Android中，只有主线程才能更新UI，因此我们需要使用Handler将更新UI的操作放到主线程中执行。
-2. 处理定时任务：Handler可以用来处理定时任务，例如定时发送消息或Runnable对象。
-3. 线程间通信：Handler可以用来在不同的线程之间传递消息和Runnable对象，从而实现线程间的通信。
+1. 在子线程中更新 UI：在 Android 中，只有主线程才能更新 UI，因此我们需要使用 Handler 将更新 UI 的操作放到主线程中执行。
+2. 处理定时任务：Handler 可以用来处理定时任务，例如定时发送消息或 Runnable 对象。
+3. 线程间通信：Handler 可以用来在不同的线程之间传递消息和 Runnable 对象，从而实现线程间的通信。
 
 ### Looper
 
-#### Looper的作用
+#### Looper 的作用
 
-在创建Handler的时候，我们可能需要传入一个Looper对象，Looper的作用是管理MessageQueue，一个线程对应一个Looper和MessageQueue。通过`Looper.myLooper()`可以获取到当前线程的Looper对象，通过`Looper.prepare()`可以创建一个Looper对象，通过`Looper.loop()`可以开始处理MessageQueue中的消息。
+在创建 Handler 的时候，我们可能需要传入一个 Looper 对象，Looper 的作用是管理 MessageQueue，一个线程对应一个 Looper 和 MessageQueue。通过`Looper.myLooper()`可以获取到当前线程的 Looper 对象，通过`Looper.prepare()`可以创建一个 Looper 对象，通过`Looper.loop()`可以开始处理 MessageQueue 中的消息。
 
-#### Looper的创建过程
+#### Looper 的创建过程
 
-- Looper通过`Looper.prepare()`方法创建，new出来的Looper直接设置到了`sThreadLocal`里面。
+- Looper 通过`Looper.prepare()`方法创建，new 出来的 Looper 直接设置到了`sThreadLocal`里面。
 - `sThreadLocal`里面是一个`map`数据结构。`key`是`当前Thread`，`value`是`Looper`。
 
-因此`Looper.prepare()`不能多次调用，因为一个线程只允许创建一次Looper对象。后面通过`Looper.myLooper()`直接获取。
+因此`Looper.prepare()`不能多次调用，因为一个线程只允许创建一次 Looper 对象。后面通过`Looper.myLooper()`直接获取。
 
-由于sThreadLocal持有当前线程的引用，而主线程在运行时一直存在，所以主线程的Looper是一直存在的，Looper也会一直持有`MessageQueue`和`Message`的引用，而`Handler`持有`MessageQueue`引用，而Handler的内部类的创建方式会持有外部类的引用，所以如果在activity中使用内部类的方式创建handler会造成`activity`的内存泄露，在activity需要销毁的时候无法完成销毁。因此在activity销毁的时候需要调用`Handler.removeCallbacksAndMessages()`,`removeCallbacksAndMessages`会移除handler发送的所有`Message`，切断`Handler`和`MessageQueue`和`Looper`的引用关系，从而阻止内存泄露。
+由于 sThreadLocal 持有当前线程的引用，而主线程在运行时一直存在，所以主线程的 Looper 是一直存在的，Looper 也会一直持有`MessageQueue`和`Message`的引用，而`Handler`持有`MessageQueue`引用，而 Handler 的内部类的创建方式会持有外部类的引用，所以如果在 activity 中使用内部类的方式创建 handler 会造成`activity`的内存泄露，在 activity 需要销毁的时候无法完成销毁。因此在 activity 销毁的时候需要调用`Handler.removeCallbacksAndMessages()`,`removeCallbacksAndMessages`会移除 handler 发送的所有`Message`，切断`Handler`和`MessageQueue`和`Looper`的引用关系，从而阻止内存泄露。
 
 ```java
 private static void prepare(boolean quitAllowed) {
@@ -35,9 +35,9 @@ private static void prepare(boolean quitAllowed) {
     }
 ```
 
-#### Looper的循环过程
+#### Looper 的循环过程
 
-Looper通过`Looper.loop()`方法开始循环处理MessageQueue中的消息，它会不断地从MessageQueue中取出消息，然后调用Handler的`dispatchMessage()`方法来处理消息。
+Looper 通过`Looper.loop()`方法开始循环处理 MessageQueue 中的消息，它会不断地从 MessageQueue 中取出消息，然后调用 Handler 的`dispatchMessage()`方法来处理消息。
 
 ```java
 for (;;) {
@@ -138,7 +138,7 @@ for (;;) {
 
 #### `MessageQueue.next()`
 
-`MessageQueue`的`next()`方法用于从MessageQueue中取出下一个待处理的消息，如果没有消息，则阻塞当前线程，直到有消息到来。
+`MessageQueue`的`next()`方法用于从 MessageQueue 中取出下一个待处理的消息，如果没有消息，则阻塞当前线程，直到有消息到来。
 
 ```java
 Message next() {
@@ -248,11 +248,11 @@ Message next() {
     }
 ```
 
-MeesageQueue.next方法中判断消息发送的时间使用的是`SystemClock.uptimeMillis()`所用的时间，调整手机时间不会影响`handler`的消息触发的时间。
+MeesageQueue.next 方法中判断消息发送的时间使用的是`SystemClock.uptimeMillis()`所用的时间，调整手机时间不会影响`handler`的消息触发的时间。
 
-#### MeesageQueue.postSyncBarrier()和MessageQueue.removeSyncBarrier()
+#### MeesageQueue.postSyncBarrier()和 MessageQueue.removeSyncBarrier()
 
-`postSyncBarrier`用于向MessageQueue中插入一个同步屏障，当同步屏障存在的时候，同步的消息将不会被处理，只有异步消息不受影响。当`removeSyncBarrier`执行后同步屏障被移除，同步消息将得到执行。
+`postSyncBarrier`用于向 MessageQueue 中插入一个同步屏障，当同步屏障存在的时候，同步的消息将不会被处理，只有异步消息不受影响。当`removeSyncBarrier`执行后同步屏障被移除，同步消息将得到执行。
 
 这两个方法应该成对调用，避免同步消息一直得不到处理
 
@@ -260,6 +260,10 @@ MeesageQueue.next方法中判断消息发送的时间使用的是`SystemClock.up
 
 `nativePollOnce`是`MessageQueue`的本地方法，用于等待消息的到来，当有消息到来时，该过程是阻塞的，`Looper`也是阻塞的。`nativePollOnce`会唤醒等待的线程，然后`MessageQueue`会调用`next`方法获取消息，并执行消息中的`runnable`或者`callback`。
 
-#### MeesageQueue.nativePollOnce为何没有卡死主线程
+#### MeesageQueue.nativePollOnce 为何没有卡死主线程
 
-`nativePollOnce`会阻塞等待消息的到来，阻塞会释放CPU资源。主线程Ui的处理依赖于Handler对于各种UI消息的处理。
+`nativePollOnce`会阻塞等待消息的到来，阻塞会释放 CPU 资源。主线程 Ui 的处理依赖于 Handler 对于各种 UI 消息的处理。
+
+### handler 实现跨线程的原理
+
+底层是通过 ThreadLocal 实现的，ThreadLocal 是线程本地变量，每个线程都有自己独立的 ThreadLocal 变量，当线程执行完毕后，ThreadLocal 变量会被销毁。ThreadLocal 保存了 Looper 和 MessageQueue。当需要跨线程的时候只需要获取到目标线程 handler 就可以向目标的线程发送、处理消息。

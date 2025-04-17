@@ -15,6 +15,15 @@
 2. 系统内存不足
 3. 应用程序申请的内存过大
 
-### 如何定位ANR和OOM
+### 如何定位ANR
 
-> 获取ANR日志 `$adb pull data/anr/traces.txt `
+1. 获取ANR日志 `$adb pull data/anr/traces.txt `
+  
+   确定ANR类型：从logcat中找到ANR类型，例如InputDispatching Timeout、Broadcast Timeout、Service Timeout和死锁Block Waitting等。
+
+2. 使用Traceview定位耗时操作或者通过Android Profile查看方法执行时间
+ 
+    在代码中插入 Debug.startMethodTracing() 和 Debug.stopMethodTracing()，生成 .trace 文件。
+    通过 Android Studio 的 ​​Profiler​​ 查看方法调用耗时。
+
+3. 使用SysTrace定位耗时操作

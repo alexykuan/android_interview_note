@@ -10,6 +10,18 @@ ViewModel通过ViewModelProvider类创建的时候会`put`到ViewModelStore中�
 
 LiveData 是一种可观察的数据持有者类。与常规的可观察者不同，LiveData 具有生命周期感知能力，这意味着它尊重其他应用组件（如 Activity、Fragment 或 Service）的生命周期。这种能力使 LiveData 能够确保界面符合当前的生命周期状态。这有助于避免因界面组件的生命周期比 LiveData 存在时间更长而导致的问题，比如试图在不再存在的 Activity 上更新 UI。通常LiveData和ViewModel一起使用，ViewModel可以持有LiveData，并且LiveData可以通知观察者数据的变化，从而更新UI。
 
+```kotlin
+liveData.observe(lifecycleOwner) { data ->
+    // update UI
+}
+```
+将LifecycleOwner和observer绑定在一起 `LifecycleBoundObserver`
+当数据放生改变的时候会调用`LifecycleBoundObserver`的`shouldBeActive()`方法来判断被绑定的LifecycleOwner是否处于活跃状态，如果处于活跃状态则调用`onChange()`方法，否则将`LifecycleBoundObserver`添加到`mPendingActivations`中，当LifecycleOwner处于活跃状态的时候会调用`mPendingActivations`中的`onChange()`方法。
+
+### LifeCycleOwner是什么，起什么作用呢
+
+LifecycleOwner是Lifecycle的持有者，LifecycleOwner的生命周期回调会调用LifecycleRegistry的`handleLifecycleEvent()`方法，从而改变LifecycleRegistry的`mState`，当`mState`改变的时候会调用`mObserverMap`中的`LifecycleObserver`的`onStateChanged()`方法，从而通知观察者Lifecycle的状态改变。
+
 ### LiveData的原理
 
 - `LiveData.value` 只能在主线程更新LiveData的值
@@ -90,3 +102,5 @@ protected void postValue(T value) {
         ArchTaskExecutor.getInstance().postToMainThread(mPostValueRunnable);
     }
 ```
+
+`LifeCycleRegistry`管理`LifeCycleOwner`和`LifeCycleObserver`当`FragmentActivity`或者`Fragment`生命周期变化的时候通知`LifeCycleObserver`,通过`LifeCycleOwner`可以获取到当前的`LifeCycle`。

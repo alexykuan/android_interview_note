@@ -48,3 +48,4 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
              (vma->vm_end - vma->vm_start) / SZ_1K, vma->vm_flags,
              (unsigned long)pgprot_val(vma->vm_page_prot));
 ```
+如果是非`oneway`方式还需要除以2，因为`oneway`方式不需要返回值，所以可以多使用一半的内存。
